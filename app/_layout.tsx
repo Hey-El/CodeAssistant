@@ -1,37 +1,83 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useContext } from "react";
+import { StatusBar } from "expo-status-bar";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SignupScreen from "./(tabs)/signup";
+import IconButton from "./(tabs)/iconButton";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LoginScreen from "./(tabs)/login";
+import { NavigationContainer } from "@react-navigation/native";
+import { AuthContext, AuthContextProvider } from "../components/auth-context";
+import Index from "./(tabs)";
+import Settings from "./(tabs)/Settings";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+function MyTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false, // Hides the header for all screens
+        tabBarStyle: { backgroundColor: "#fffaf0" }, // Optional: sets the tab bar background color
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={Index}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="My account"
+        component={Settings}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="home" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+function RootLayout() {
+  return (
+    <Stack.Navigator>
+      {/* Tab screens */}
+      {/* Payment Modal */}
+      <Stack.Screen name="SignUp" component={SignupScreen} />
+      <Stack.Screen
+        name="Log In"
+        component={LoginScreen}
+        options={{
+          presentation: "modal", // Modal presentation for Payment screen
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+function Navigation() {
+  const authCtx = useContext(AuthContext);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <NavigationContainer independent={true}>
+      {!authCtx.isAuthenticated && <RootLayout />}
+      {authCtx.isAuthenticated && <MyTabs />}
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <StatusBar style="light" />
+      <AuthContextProvider>
+        <Navigation />
+      </AuthContextProvider>
+    </>
   );
 }
