@@ -14,6 +14,8 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MyTabs() {
+  // Use `isLoading` to show a loading indicator
+
   return (
     <Tab.Navigator
       screenOptions={{

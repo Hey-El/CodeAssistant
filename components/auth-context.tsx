@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSubscription } from "@/app/(tabs)/useSubscription";
 
 interface AuthContextType {
   authToken: string | null; // authToken can be string or null
@@ -8,7 +9,6 @@ interface AuthContextType {
   login: (token: string, userId: string) => Promise<void>;
   logout: () => Promise<void>; // logout function returns a promise
   subscriptionType: string; // Default subscription type
-  updateSubscription: (newType: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -18,7 +18,6 @@ export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   logout: async () => {}, // Provide a default async logout function
   subscriptionType: "free", // Default subscription type
-  updateSubscription: (newType) => {},
 });
 
 export function AuthContextProvider({ children }) {
@@ -43,10 +42,6 @@ export function AuthContextProvider({ children }) {
 
     loadToken();
   }, []);
-
-  const updateSubscription = (newType: string) => {
-    setSubscriptionType(newType); // Update subscription type
-  };
 
   const isAuthenticated = !!authToken;
 
@@ -75,7 +70,6 @@ export function AuthContextProvider({ children }) {
         isAuthenticated,
         authToken,
         subscriptionType,
-        updateSubscription,
       }}
     >
       {children}

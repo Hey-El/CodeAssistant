@@ -12,10 +12,14 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
-import { AuthContext } from "../components/auth-context";
+import { AuthContext } from "@/components/auth-context";
 import { globalStyles } from "./styles";
-import { imageEnhancer } from "./imageEnhance";
 import { LoadingOverlay } from "./loading";
+import { useFocusEffect } from "@react-navigation/native";
+import { imageEnhancer } from "./imageEnhance";
+import { useSubscription } from "./useSubscription";
+import Purchases from "react-native-purchases";
+import checkSubscription from "./checkSubscription";
 
 const Index = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -24,6 +28,7 @@ const Index = React.memo(() => {
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [explanation, setExplanation] = useState("");
+  const { updateCustomerInfo } = useSubscription();
 
   const fetchWithTimeout = (url, options, timeout = 20000) => {
     // Set timeout to 20 seconds
@@ -34,6 +39,19 @@ const Index = React.memo(() => {
       ),
     ]);
   };
+
+  // Use useFocusEffect to handle loading when the tab is pressed
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true); // Set loading to true when the tab is pressed
+      // Simulate data fetching or perform actual operations here
+      const timer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after operations complete
+      }, 1000); // Simulate 1-second load time
+
+      return () => clearTimeout(timer); // Cleanup timer when the tab is unfocused
+    }, [])
+  );
 
   //verify permissions
   async function verifyPermission() {
@@ -81,6 +99,25 @@ const Index = React.memo(() => {
 
     setIsLoading(true);
 
+    if (userId) {
+      // Proceed with the function call because userId is guaranteed to be a string here
+      await Purchases.logIn(userId);
+    } else {
+      console.error("User ID is null or undefined");
+      // Handle the error appropriately, e.g., show an alert or navigate to login
+    }
+    // Fetch latest customer info (including entitlements)
+    const customerInfo = await Purchases.getCustomerInfo();
+    updateCustomerInfo(customerInfo);
+
+    // Determine the proStatus (either "Pro" or "Free")
+    const proStatus = customerInfo.entitlements.active["Pro access"]
+      ? "Pro"
+      : "Free";
+
+    // Optionally, call your backend to sync this info
+    await checkSubscription(userId, proStatus);
+
     try {
       const response = await fetchWithTimeout(
         "https://codeassistant-cc828ac15c2e.herokuapp.com/upload",
@@ -121,6 +158,15 @@ const Index = React.memo(() => {
   if (pickedImage) {
     imagePreview = (
       <Image style={globalStyles.imagePreview} source={{ uri: pickedImage }} />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={globalStyles.bottomButtonContainer}>
+        <LoadingOverlay />
+        <Text>Loading...</Text>
+      </View>
     );
   }
   return (

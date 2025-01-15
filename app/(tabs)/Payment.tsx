@@ -2,16 +2,20 @@ const SERVER_URL = "https://codeassistant-cc828ac15c2e.herokuapp.com/";
 
 export default async function upgradeSubscription({ userId }) {
   try {
+    const payload = JSON.stringify({ userId });
+    console.log("Payload being sent:", payload);
     const response = await fetch(SERVER_URL + "upgrade-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
+      body: payload,
     });
 
     if (response.ok) {
-      console.log(response);
+      const responseData = await response.json();
+      return responseData;
     }
   } catch (error) {
     console.error("Error upgrading subscription:", error);
+    return null;
   }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Platform } from "react-native";
 import Purchases, {
   PurchasesOffering,
@@ -12,7 +12,14 @@ export function useSubscription() {
     useState<PurchasesOffering | null>(null);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   // Determine if the user has an active "Pro" subscription
-  const isProMember = customerInfo?.activeSubscriptions?.includes("Pro");
+  const [isProMember, setIsProMember] = useState(false);
+
+  const updateCustomerInfo = useCallback((customerInfo: CustomerInfo) => {
+    setCustomerInfo(customerInfo);
+    const proStatus =
+      customerInfo.entitlements.active["Pro access"] !== undefined;
+    setIsProMember(proStatus);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,14 +37,21 @@ export function useSubscription() {
     };
 
     fetchData();
-  }, []);
 
-  useEffect(() => {
-    const customerInfoUpdated = async (purchaseInfo: CustomerInfo) => {
-      setCustomerInfo(purchaseInfo);
+    // Add listener for updates
+    Purchases.addCustomerInfoUpdateListener(updateCustomerInfo);
+
+    // Cleanup listener on unmount
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(updateCustomerInfo);
     };
-    Purchases.addCustomerInfoUpdateListener(customerInfoUpdated);
-  }, []);
+  }, [updateCustomerInfo]);
 
-  return { currentOffering, customerInfo, isProMember };
+  return {
+    currentOffering,
+    customerInfo,
+    isProMember,
+    setIsProMember,
+    updateCustomerInfo,
+  };
 }

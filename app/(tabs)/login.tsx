@@ -1,14 +1,15 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContent from "@/components/AuthContent";
 import { AuthContext } from "@/components/auth-context";
 import { authenticateLogIn } from "./auth";
 import { Alert } from "react-native";
 import checkSubscription from "./checkSubscription";
 import { useSubscription } from "./useSubscription";
+import Purchases from "react-native-purchases";
 
 function LoginScreen() {
   const authCtx = useContext(AuthContext);
-  const { isProMember } = useSubscription();
+  const { updateCustomerInfo } = useSubscription();
 
   async function LogInUser({ email, password }) {
     try {
@@ -17,13 +18,16 @@ function LoginScreen() {
         const token = response.idToken; // No need to stringify, it's already a string
         const userId = response.localId;
         await authCtx.login(token, userId);
-        const proStatus = isProMember ? "Pro" : "Free";
-        const subscription = await checkSubscription(userId, proStatus);
-        if (subscription && subscription.subscriptionType) {
-          authCtx.updateSubscription(subscription.subscriptionType); // Update context with the new subscription type
-        }
+        await Purchases.logIn(userId);
+        const customerInfo = await Purchases.getCustomerInfo();
+        updateCustomerInfo(customerInfo);
+        const proStatus = customerInfo.entitlements.active["Pro access"]
+          ? "Pro"
+          : "Free";
+        const membership = await checkSubscription(userId, proStatus);
+        console.log("Subscription result:", membership);
       } else {
-        throw new Error("Invalid subscription type response");
+        throw new Error("Invalid login response");
       }
     } catch (error) {
       console.log(error);

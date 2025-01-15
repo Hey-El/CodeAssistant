@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, TouchableOpacity, Text, TextInput } from "react-native";
 import { Colors } from "./colors";
-import { globalStyles } from "../(tabs)/styles";
+import { globalStyles } from "@/app/(tabs)/styles";
 
 function AuthForm({ onSubmit, isLogin }) {
   const [enteredEmail, setEnteredEmail] = useState("");

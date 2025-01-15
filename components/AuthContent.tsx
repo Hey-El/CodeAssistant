@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, View, TouchableOpacity, Text } from "react-native";
 import AuthForm from "./AuthForm";
 import { useNavigation } from "@react-navigation/native";
-import { globalStyles } from "../(tabs)/styles";
+import { globalStyles } from "@/app/(tabs)/styles";
 
 function AuthContent({ isLogin = false, Authenticated }) {
   const navigation = useNavigation();
