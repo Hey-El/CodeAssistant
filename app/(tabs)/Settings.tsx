@@ -124,7 +124,7 @@ function Settings() {
     <ImageBackground
       source={require("../../assets/images/icon.png")} // Path to your icon.png
       style={globalStyles.colouredContainer} // Ensure your globalStyles.container includes flex: 1 for proper layout
-      resizeMode="cover" // Adjust how the image fits (e.g., 'cover', 'contain', etc.)
+      resizeMode="contain" // Adjust how the image fits (e.g., 'cover', 'contain', etc.)
     >
       <View style={globalStyles.thirdContainer}>
         <View style={globalStyles.image}>

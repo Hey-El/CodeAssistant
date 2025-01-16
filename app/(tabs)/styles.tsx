@@ -3,7 +3,8 @@ import { StyleSheet } from "react-native";
 export const globalStyles = StyleSheet.create({
   colouredContainer: {
     flex: 1, // Ensures the View takes up the available screen space
-    backgroundColor: "#fffaf0",
+    backgroundColor: "#ffffff",
+    width: "100%",
   },
   bottomButtonContainer: {
     flex: 1, // Take up available space in the bottom
