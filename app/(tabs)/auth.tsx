@@ -1,6 +1,7 @@
 import axios from "axios";
+import env from "react-native-dotenv";
 
-const API_KEY = "AIzaSyBYPyW6FDdK7sVmYSd1zm2a3hpQ1nvR4ls";
+const API_KEY = env.API_KEY_FF;
 
 export async function authenticateLogIn(email, password) {
   try {

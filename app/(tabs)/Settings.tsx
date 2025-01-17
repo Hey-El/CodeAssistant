@@ -5,7 +5,7 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
-import { useContext, useCallback, useState } from "react";
+import React, { useContext, useCallback, useState } from "react";
 import { AuthContext } from "@/components/auth-context";
 import { globalStyles } from "./styles";
 import { useSubscription } from "./useSubscription";
@@ -15,11 +15,23 @@ import upgradeSubscription from "./Payment";
 import { LoadingOverlay } from "./loading";
 import { useFocusEffect } from "@react-navigation/native";
 
-function Settings() {
+const Settings = React.memo(() => {
   const authCtx = useContext(AuthContext);
   const { isProMember, currentOffering, updateCustomerInfo } =
     useSubscription();
   const [isLoading, setIsLoading] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true); // Set loading to true when the tab is pressed
+      // Simulate data fetching or perform actual operations here
+      const timer = setTimeout(() => {
+        setIsLoading(false); // Set loading to false after operations complete
+      }, 1000); // Simulate 1-second load time
+
+      return () => clearTimeout(timer); // Cleanup timer when the tab is unfocused
+    }, [])
+  );
 
   const handleMonthlyPurchase = useCallback(async () => {
     if (!currentOffering?.monthly) {
@@ -43,29 +55,13 @@ function Settings() {
     }
   }, [currentOffering]);
 
-  // Use useFocusEffect to handle loading when the tab is pressed
-  useFocusEffect(
-    useCallback(() => {
-      setIsLoading(true); // Set loading to true when the tab is pressed
-      // Simulate data fetching or perform actual operations here
-      const timer = setTimeout(() => {
-        setIsLoading(false); // Set loading to false after operations complete
-      }, 1000); // Simulate 1-second load time
-
-      return () => clearTimeout(timer); // Cleanup timer when the tab is unfocused
-    }, [])
-  );
-
   const LogOutUser = useCallback(async () => {
     await authCtx.logout();
   }, [authCtx]);
 
   const handleUpgrade = useCallback(async () => {
     try {
-      console.log("Auth context:", authCtx);
       const paywallResult = await RevenueCatUI.presentPaywall();
-      console.log("Paywall result:", paywallResult);
-
       // Handle the result
       switch (paywallResult) {
         case PAYWALL_RESULT.PURCHASED:
@@ -76,11 +72,9 @@ function Settings() {
             );
             return;
           }
-          console.log("sending userID to upgradesubscription", authCtx.userId);
           const upgradeResponse = await upgradeSubscription({
             userId: authCtx.userId,
           });
-          console.log("Upgrade response:", upgradeResponse);
           // Fetch updated customer info and call the updater
           const updatedCustomerInfo = await Purchases.getCustomerInfo();
           console.log(
@@ -89,16 +83,13 @@ function Settings() {
           );
           // Update state and isProMember
           updateCustomerInfo(updatedCustomerInfo);
-          console.log("Updated isProMember:", isProMember);
           break;
         case PAYWALL_RESULT.ERROR:
           alert("An error occurred while presenting the paywall.");
           break;
         case PAYWALL_RESULT.CANCELLED:
-          console.log("User cancelled the paywall.");
           break;
         default:
-          console.log("Unknown paywall result:", paywallResult);
       }
     } catch (error) {
       console.error("Error presenting paywall:", error);
@@ -153,5 +144,6 @@ function Settings() {
       </View>
     </ImageBackground>
   );
-}
+});
+
 export default Settings;

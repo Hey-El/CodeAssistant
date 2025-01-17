@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import {
   launchCameraAsync,
   useCameraPermissions,
@@ -29,16 +29,7 @@ const Index = React.memo(() => {
     useCameraPermissions();
   const [explanation, setExplanation] = useState("");
   const { updateCustomerInfo } = useSubscription();
-
-  const fetchWithTimeout = (url, options, timeout = 20000) => {
-    // Set timeout to 20 seconds
-    return Promise.race([
-      fetch(url, options),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Request timed out")), timeout)
-      ),
-    ]);
-  };
+  const [hasCameraPermission, setHasCameraPermission] = useState(false);
 
   // Use useFocusEffect to handle loading when the tab is pressed
   useFocusEffect(
@@ -54,7 +45,7 @@ const Index = React.memo(() => {
   );
 
   //verify permissions
-  async function verifyPermission() {
+  const verifyPermission = useCallback(async () => {
     if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
       const permissionResponse = await requestPermission();
 
@@ -65,7 +56,17 @@ const Index = React.memo(() => {
       return false;
     }
     return true;
-  }
+  }, [cameraPermissionInformation, requestPermission]);
+
+  // Verify permission at the start
+  useEffect(() => {
+    const initializePermissions = async () => {
+      const hasPermission = await verifyPermission();
+      setHasCameraPermission(hasPermission);
+    };
+
+    initializePermissions();
+  }, []);
 
   //takes image
   async function takeImageHandler() {
@@ -81,8 +82,6 @@ const Index = React.memo(() => {
     });
     setPickedImage(image.assets[0].uri);
     const enhanced = await imageEnhancer(image.assets[0].uri);
-    console.log(enhanced);
-
     //send data to backend
     const formattedUri = enhanced.replace("file://", "");
     const formData = new FormData();
@@ -92,11 +91,7 @@ const Index = React.memo(() => {
       name: "photo.jpg",
     });
 
-    console.log(userId);
-
     formData.append("userId", String(userId));
-    console.log(formData);
-
     setIsLoading(true);
 
     if (userId) {
@@ -119,7 +114,7 @@ const Index = React.memo(() => {
     await checkSubscription(userId, proStatus);
 
     try {
-      const response = await fetchWithTimeout(
+      const response = await fetch(
         "https://codeassistant-cc828ac15c2e.herokuapp.com/upload",
         {
           method: "POST",
@@ -134,7 +129,6 @@ const Index = React.memo(() => {
       }
 
       const responseData = await response.json();
-      console.log("Response from backend:", responseData);
       if (responseData.explanation) {
         setExplanation(responseData.explanation);
       } else {

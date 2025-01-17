@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { StatusBar } from "expo-status-bar";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SignupScreen from "./(tabs)/signup";
@@ -14,7 +14,31 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MyTabs() {
-  // Use `isLoading` to show a loading indicator
+  const TabScreens = useMemo(
+    () => (
+      <>
+        <Tab.Screen
+          name="Home"
+          component={Index}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <IconButton icon="home" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="My account"
+          component={Settings}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <IconButton icon="person" size={size} color={color} />
+            ),
+          }}
+        />
+      </>
+    ),
+    []
+  );
 
   return (
     <Tab.Navigator
