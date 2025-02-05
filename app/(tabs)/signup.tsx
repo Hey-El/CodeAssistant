@@ -13,11 +13,6 @@ function SignupScreen() {
     const userId = response.localId;
     await authCtx.login(token, userId);
     const newUser = await signUpUser(userId);
-    if (newUser.ok) {
-      console.log("User successfully created");
-    } else {
-      console.log("Error creating user");
-    }
   }
 
   return <AuthContent Authenticated={SignUpUser} />;

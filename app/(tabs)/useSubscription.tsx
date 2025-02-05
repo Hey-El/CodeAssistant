@@ -4,9 +4,8 @@ import Purchases, {
   PurchasesOffering,
   CustomerInfo,
 } from "react-native-purchases";
-import env from "react-native-dotenv";
 
-const API_KEY = env.API_KEY;
+const API_KEY = "appl_amUULqrjAwYvtFDxuhgVjhqsJRf";
 
 export function useSubscription() {
   const [currentOffering, setCurrentOffering] =

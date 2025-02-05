@@ -78,13 +78,21 @@ function AuthForm({ onSubmit, isLogin }) {
           />
         </>
       )}
-      <View style={globalStyles.container}>
+      <View style={globalStyles.authcontainer}>
         <TouchableOpacity style={globalStyles.buttons} onPress={submitHandler}>
           <Text style={globalStyles.textButton}>
             {isLogin ? "Log In" : "Sign Up"}
           </Text>
         </TouchableOpacity>
       </View>
+
+      {!isLogin && (
+        <Text style={globalStyles.deleteButton}>
+          This app tracks the number of scans you perform each month to provide
+          accurate usage monitoring and account-based functionality. A user
+          account is required to assign a unique ID for tracking purposes.
+        </Text>
+      )}
     </View>
   );
 }

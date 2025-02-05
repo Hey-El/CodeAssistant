@@ -14,6 +14,20 @@ import Purchases from "react-native-purchases";
 import upgradeSubscription from "./Payment";
 import { LoadingOverlay } from "./loading";
 import { useFocusEffect } from "@react-navigation/native";
+import { deleteUser } from "./auth";
+import { Linking } from "react-native";
+
+const handleTermsClick = () => {
+  Linking.openURL(
+    "https://codeassistant-cc828ac15c2e.herokuapp.com/terms-of-service"
+  ).catch((err) => console.error("Failed to open URL:", err));
+};
+
+const handleSubmitClick = () => {
+  Linking.openURL(
+    "https://codeassistant-cc828ac15c2e.herokuapp.com/customer-support"
+  ).catch((err) => console.error("Failed to open URL:", err));
+};
 
 const Settings = React.memo(() => {
   const authCtx = useContext(AuthContext);
@@ -58,6 +72,23 @@ const Settings = React.memo(() => {
   const LogOutUser = useCallback(async () => {
     await authCtx.logout();
   }, [authCtx]);
+
+  const DeleteUserHandler = async () => {
+    try {
+      const response = await deleteUser(authCtx.authToken);
+      console.log(response);
+      if (response.kind === "identitytoolkit#DeleteAccountResponse") {
+        Alert.alert("Account successfully deleted");
+        await authCtx.logout(); // Log the user out after deletion
+      } else {
+        Alert.alert(
+          "Failed to delete account. Please log out of account and log back in again to delete account."
+        );
+      }
+    } catch (error) {
+      Alert.alert("An unexpected error occurred.");
+    }
+  };
 
   const handleUpgrade = useCallback(async () => {
     try {
@@ -114,10 +145,10 @@ const Settings = React.memo(() => {
   return (
     <ImageBackground
       source={require("../../assets/images/icon.png")} // Path to your icon.png
-      style={globalStyles.colouredContainer} // Ensure your globalStyles.container includes flex: 1 for proper layout
+      style={globalStyles.imageBackground} // Ensure your globalStyles.container includes flex: 1 for proper layout
       resizeMode="contain" // Adjust how the image fits (e.g., 'cover', 'contain', etc.)
     >
-      <View style={globalStyles.thirdContainer}>
+      <View style={globalStyles.upperContainer}>
         <View style={globalStyles.image}>
           <Text style={globalStyles.textButton}>{subscriptionMessage}</Text>
         </View>
@@ -141,6 +172,33 @@ const Settings = React.memo(() => {
         <TouchableOpacity style={globalStyles.buttons} onPress={LogOutUser}>
           <Text style={globalStyles.textButton}>Log Out</Text>
         </TouchableOpacity>
+        <Text style={globalStyles.deleteButton}>
+          If you want to permanently delete your account, please select the
+          button below.
+        </Text>
+        <TouchableOpacity
+          style={globalStyles.buttons}
+          onPress={DeleteUserHandler}
+        >
+          <Text style={globalStyles.textButton}>Delete Account</Text>
+        </TouchableOpacity>
+
+        {/* Footer links */}
+        <View style={globalStyles.footerContainer}>
+          <TouchableOpacity
+            style={globalStyles.footerLink}
+            onPress={handleTermsClick}
+          >
+            <Text style={globalStyles.footertextButton}>Terms of Use</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={globalStyles.footerLink}
+            onPress={handleSubmitClick}
+          >
+            <Text style={globalStyles.footertextButton}>Contact Support</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ImageBackground>
   );

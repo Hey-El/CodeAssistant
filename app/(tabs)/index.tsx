@@ -46,13 +46,18 @@ const Index = React.memo(() => {
 
   //verify permissions
   const verifyPermission = useCallback(async () => {
+    if (!cameraPermissionInformation) {
+      return false; // Or handle this case appropriately
+    }
     if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
       const permissionResponse = await requestPermission();
 
       return permissionResponse.granted;
     }
     if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert("You need to grant permission to use camera for this app");
+      Alert.alert(
+        "Camera access is required to take and upload images of your code."
+      );
       return false;
     }
     return true;
@@ -164,7 +169,7 @@ const Index = React.memo(() => {
     );
   }
   return (
-    <View style={globalStyles.colouredContainer}>
+    <View style={globalStyles.container}>
       <View style={globalStyles.image}>{imagePreview}</View>
       <View style={globalStyles.ExplanationtextContainer}>
         <ScrollView>
@@ -174,7 +179,7 @@ const Index = React.memo(() => {
           </Text>
         </ScrollView>
       </View>
-      <View style={globalStyles.container}>
+      <View style={globalStyles.buttoncontainer}>
         <TouchableOpacity
           style={globalStyles.buttons}
           onPress={takeImageHandler}

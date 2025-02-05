@@ -1,40 +1,50 @@
 import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
-  colouredContainer: {
-    flex: 1, // Ensures the View takes up the available screen space
+  authcontainer: {
+    width: "100%",
+    justifyContent: "center", // Center content vertically
+    alignItems: "center",
+  },
+  container: {
+    flex: 1,
     backgroundColor: "#ffffff",
     width: "100%",
+    justifyContent: "center", // Center content vertically
+    alignItems: "center",
   },
   bottomButtonContainer: {
-    flex: 1, // Take up available space in the bottom
+    flex: 2, // Take up available space in the bottom
     justifyContent: "flex-end", // Push the buttons to the bottom
     alignItems: "center",
     paddingBottom: 50, // Space from the bottom edge (adjust as needed)
   },
-  thirdContainer: {
-    flex: 1, // Take up one third of the screen
-    justifyContent: "flex-start", // Center the buttons vertically
-    alignItems: "center", // Center buttons horizontally
+  upperContainer: {
+    flex: 1, // Takes up 1/3 of the screen
+    justifyContent: "center", // Centers content vertically
+    alignItems: "center", // Centers content horizontally
+    width: "100%", // Ensures full width
+    paddingVertical: 20, // Adds some spacing
   },
-  container: {
-    alignItems: "center",
+  imageBackground: {
+    flex: 1, // Ensures it covers the full screen
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover", // Ensures the image covers the screen
   },
   image: {
+    flex: 1,
     borderRadius: 20,
     height: "33%",
     width: "100%",
     backgroundColor: "#d3d3d3", // Light background color
-    borderWidth: 1, // Optional: adds a border
-    borderColor: "#ccc", // Optional: border color
     overflow: "hidden", // Ensures the image stays within the rounded corners
-    elevation: 5, // Optional: adds shadow for Android
     shadowColor: "#000", // Optional: shadow color for iOS
     shadowOffset: { width: 0, height: 2 }, // Optional: shadow offset
     shadowOpacity: 0.1, // Optional: shadow opacity
     shadowRadius: 5, // Optional: shadow radius
     justifyContent: "center",
-    alignSelf: "center",
+    alignItems: "center",
   },
   imagePreview: {
     width: "100%", // Make the image take up full width of the container
@@ -49,7 +59,6 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 1, // Optional: adds a border
     borderColor: "#ccc", // Optional: border color
     overflow: "hidden", // Ensures the image stays within the rounded corners
-    elevation: 5, // Optional: adds shadow for Android
     shadowColor: "#000", // Optional: shadow color for iOS
     shadowOffset: { width: 0, height: 2 }, // Optional: shadow offset
     shadowOpacity: 0.1, // Optional: shadow opacity
@@ -67,12 +76,6 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 16, // Adds horizontal padding for better alignment
     textAlign: "justify", // Justifies the text for a clean look
   },
-  buttonContainer: {
-    borderRadius: 24,
-    padding: 6,
-    marginHorizontal: 8,
-    marginVertical: 2,
-  },
   buttons: {
     backgroundColor: "#d2691e", // Bootstrap primary color
     paddingVertical: 12,
@@ -82,6 +85,17 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     margin: 4,
     width: "90%",
+  },
+  registrationbuttons: {
+    backgroundColor: "#d2691e", // Bootstrap primary color
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 4,
+    width: "90%",
+    flexDirection: "row",
   },
   textButton: {
     color: "#ffffff", // White text color
@@ -127,11 +141,14 @@ export const globalStyles = StyleSheet.create({
     textAlignVertical: "top",
     marginBottom: 10,
   },
-  proContainer: {
-    flex: 1,
-    backgroundColor: "#fffaf0",
-    paddingHorizontal: 20,
-    paddingTop: 40,
+  deleteButton: {
+    fontSize: 14, // Slightly larger font
+    fontWeight: "bold", // Bold text for emphasis
+    color: "black", // Warning color
+    textAlign: "center", // Center-align the text
+    marginVertical: 10, // Add spacing above and below the text
+    paddingHorizontal: 20, // Add padding to make it easier to read
+    lineHeight: 22, // Increase line height for better readability
   },
   header: {
     fontSize: 24,
@@ -140,57 +157,20 @@ export const globalStyles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
   },
-  benefitCard: {
-    flexDirection: "row",
+  footerContainer: {
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 10,
-    width: "100%",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    width: "100%", // Make sure it's full width
+    paddingVertical: 10,
+    flexDirection: "row", // Ensures the child elements are arranged horizontally (side by side)
+    justifyContent: "space-evenly",
   },
-  icon: {
-    marginRight: 12,
+  footerLink: {
+    paddingVertical: 5, // Add space between the links
   },
-  benefitText: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#333",
-  },
-  upgradeButton: {
-    marginTop: 20,
-    backgroundColor: "#d2691e",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
-  upgradeText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  priceBox: {
-    backgroundColor: "#f0f8ff", // Light blue background
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#dcdcdc",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 20,
-    alignItems: "center", // Center the text within the box
-  },
-  priceText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+  footertextButton: {
+    color: "black", // Set the text color to black
+    fontSize: 16, // Adjust font size if needed
+    fontWeight: "bold", // You can make the text bold (optional)
+    textAlign: "center", // Centers the text
   },
 });

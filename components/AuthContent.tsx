@@ -68,9 +68,9 @@ function AuthContent({ isLogin = false, Authenticated }) {
   return (
     <View style={globalStyles.authContent}>
       <AuthForm isLogin={isLogin} onSubmit={submitHandler} />
-      <View style={globalStyles.container}>
+      <View style={globalStyles.authcontainer}>
         <TouchableOpacity
-          style={globalStyles.buttons}
+          style={globalStyles.registrationbuttons}
           onPress={switchAuthModeHandler}
         >
           <Text style={globalStyles.textButton}>
