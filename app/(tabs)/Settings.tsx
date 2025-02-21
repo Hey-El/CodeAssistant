@@ -6,7 +6,6 @@ import {
   Alert,
 } from "react-native";
 import React, { useContext, useCallback, useState } from "react";
-import { AuthContext } from "@/components/auth-context";
 import { globalStyles } from "./styles";
 import { useSubscription } from "./useSubscription";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
@@ -16,6 +15,9 @@ import { LoadingOverlay } from "./loading";
 import { useFocusEffect } from "@react-navigation/native";
 import { deleteUser } from "./auth";
 import { Linking } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/components/authstate";
+import { RootState } from "@/components/reduxstore";
 
 const handleTermsClick = () => {
   Linking.openURL(
@@ -30,7 +32,9 @@ const handleSubmitClick = () => {
 };
 
 const Settings = React.memo(() => {
-  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const authToken = useSelector((state: RootState) => state.auth.authToken);
+  const userId = useSelector((state: RootState) => state.auth.userId);
   const { isProMember, currentOffering, updateCustomerInfo } =
     useSubscription();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,16 +74,16 @@ const Settings = React.memo(() => {
   }, [currentOffering]);
 
   const LogOutUser = useCallback(async () => {
-    await authCtx.logout();
-  }, [authCtx]);
+    dispatch(logout());
+  }, [dispatch]);
 
   const DeleteUserHandler = async () => {
     try {
-      const response = await deleteUser(authCtx.authToken);
+      const response = await deleteUser(authToken);
       console.log(response);
       if (response.kind === "identitytoolkit#DeleteAccountResponse") {
         Alert.alert("Account successfully deleted");
-        await authCtx.logout(); // Log the user out after deletion
+        dispatch(logout()); // Log the user out after deletion
       } else {
         Alert.alert(
           "Failed to delete account. Please log out of account and log back in again to delete account."
@@ -97,14 +101,14 @@ const Settings = React.memo(() => {
       switch (paywallResult) {
         case PAYWALL_RESULT.PURCHASED:
           await handleMonthlyPurchase();
-          if (!authCtx.userId) {
+          if (!userId) {
             console.error(
               "User ID is null or undefined. Cannot upgrade subscription."
             );
             return;
           }
           const upgradeResponse = await upgradeSubscription({
-            userId: authCtx.userId,
+            userId: userId,
           });
           // Fetch updated customer info and call the updater
           const updatedCustomerInfo = await Purchases.getCustomerInfo();
@@ -125,7 +129,7 @@ const Settings = React.memo(() => {
     } catch (error) {
       console.error("Error presenting paywall:", error);
     }
-  }, [authCtx.userId, handleMonthlyPurchase]);
+  }, [userId, handleMonthlyPurchase]);
 
   const subscriptionMessage = isProMember
     ? "You are a PRO member!"

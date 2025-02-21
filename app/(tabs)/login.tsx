@@ -6,18 +6,20 @@ import { Alert } from "react-native";
 import checkSubscription from "./checkSubscription";
 import { useSubscription } from "./useSubscription";
 import Purchases from "react-native-purchases";
+import { useDispatch } from "react-redux";
+import { login } from "@/components/authstate";
 
 function LoginScreen() {
-  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
   const { updateCustomerInfo } = useSubscription();
 
   async function LogInUser({ email, password }) {
     try {
       const response = await authenticateLogIn(email, password);
       if (response && response.idToken && response.localId) {
-        const token = response.idToken; // No need to stringify, it's already a string
+        const authToken = response.idToken; // No need to stringify, it's already a string
         const userId = response.localId;
-        await authCtx.login(token, userId);
+        dispatch(login({ authToken, userId }));
         await Purchases.logIn(userId);
         const customerInfo = await Purchases.getCustomerInfo();
         updateCustomerInfo(customerInfo);

@@ -12,7 +12,6 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
-import { AuthContext } from "@/components/auth-context";
 import { globalStyles } from "./styles";
 import { LoadingOverlay } from "./loading";
 import { useFocusEffect } from "@react-navigation/native";
@@ -20,16 +19,18 @@ import { imageEnhancer } from "./imageEnhance";
 import { useSubscription } from "./useSubscription";
 import Purchases from "react-native-purchases";
 import checkSubscription from "./checkSubscription";
+import store, { persistor, RootState } from "@/components/reduxstore";
+import { useSelector } from "react-redux";
 
 const Index = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false); // Loading state
-  const { userId } = useContext(AuthContext);
   const [pickedImage, setPickedImage] = useState();
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [explanation, setExplanation] = useState("");
   const { updateCustomerInfo } = useSubscription();
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
   // Use useFocusEffect to handle loading when the tab is pressed
   useFocusEffect(

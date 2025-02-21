@@ -1,17 +1,18 @@
 import { createUser } from "./auth";
 import { useContext } from "react";
 import AuthContent from "@/components/AuthContent";
-import { AuthContext } from "@/components/auth-context";
 import signUpUser from "./newUser";
+import { useDispatch } from "react-redux";
+import { login } from "@/components/authstate";
 
 function SignupScreen() {
-  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   async function SignUpUser({ email, password }) {
     const response = await createUser(email, password);
-    const token = JSON.stringify(response.idToken);
+    const authToken = JSON.stringify(response.idToken);
     const userId = response.localId;
-    await authCtx.login(token, userId);
+    dispatch(login({ authToken, userId }));
     const newUser = await signUpUser(userId);
   }
 
