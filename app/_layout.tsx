@@ -9,9 +9,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import Index from "./(tabs)";
 import Settings from "./(tabs)/Settings";
 import { PersistGate } from "redux-persist/integration/react";
-import store, { persistor, RootState } from "@/components/reduxstore";
+import store, { persistor, RootState } from "@/components/authstate";
 import { useSelector } from "react-redux";
 import { Provider } from "react-redux";
+import { LoadingOverlay } from "./(tabs)/loading";
+import CodeChallenge from "./(tabs)/challengeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -50,24 +52,7 @@ function MyTabs() {
         tabBarStyle: { backgroundColor: "#fffaf0" }, // Optional: sets the tab bar background color
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={Index}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="My account"
-        component={Settings}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="home" size={size} color={color} />
-          ),
-        }}
-      />
+      {TabScreens}
     </Tab.Navigator>
   );
 }
@@ -81,6 +66,14 @@ function RootLayout() {
       <Stack.Screen
         name="Log In"
         component={LoginScreen}
+        options={{
+          presentation: "modal", // Modal presentation for Payment screen
+        }}
+      />
+      {/* Code Challenges Modal */}
+      <Stack.Screen
+        name="Challenges"
+        component={CodeChallenge}
         options={{
           presentation: "modal", // Modal presentation for Payment screen
         }}
@@ -104,8 +97,10 @@ export default function App() {
   return (
     <>
       <Provider store={store}>
-        <StatusBar style="light" />
-        <Navigation />
+        <PersistGate loading={<LoadingOverlay />} persistor={persistor}>
+          <StatusBar style="light" />
+          <Navigation />
+        </PersistGate>
       </Provider>
     </>
   );

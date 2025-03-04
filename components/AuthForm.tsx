@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View, TouchableOpacity, Text, TextInput } from "react-native";
-import { Colors } from "./colors";
-import { globalStyles } from "@/app/(tabs)/styles";
+import tw from "twrnc";
 
 function AuthForm({ onSubmit, isLogin }) {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -36,10 +35,10 @@ function AuthForm({ onSubmit, isLogin }) {
   }
 
   return (
-    <View>
-      <Text style={globalStyles.TextInput}>Email Address</Text>
+    <View style={tw`mb-4`}>
+      <Text style={tw`text-left font-semibold mb-2`}>Email Address</Text>
       <TextInput
-        style={globalStyles.textContainer}
+        style={tw`border bg-white border-gray-300 rounded-lg p-3 text-left`}
         autoCapitalize="none"
         onChangeText={updateInputValueHandler.bind(this, "email")} // Corrected to onChangeText
         value={enteredEmail}
@@ -47,9 +46,11 @@ function AuthForm({ onSubmit, isLogin }) {
 
       {!isLogin && (
         <>
-          <Text style={globalStyles.TextInput}>Confirm Email Address</Text>
+          <Text style={tw`text-left font-semibold mb-2`}>
+            Confirm Email Address
+          </Text>
           <TextInput
-            style={globalStyles.textContainer}
+            style={tw`border bg-white border-gray-300 rounded-lg p-3 text-left`}
             autoCapitalize="none"
             onChangeText={updateInputValueHandler.bind(this, "confirmEmail")} // Corrected to onChangeText
             value={enteredConfirmEmail}
@@ -57,9 +58,9 @@ function AuthForm({ onSubmit, isLogin }) {
         </>
       )}
 
-      <Text style={globalStyles.TextInput}>Password</Text>
+      <Text style={tw`text-left font-semibold mb-2`}>Password</Text>
       <TextInput
-        style={globalStyles.textContainer}
+        style={tw`w-full border bg-white border-gray-300 rounded-lg p-3 text-left`}
         autoCapitalize="none"
         onChangeText={updateInputValueHandler.bind(this, "password")} // Corrected to onChangeText
         secureTextEntry={true}
@@ -68,9 +69,9 @@ function AuthForm({ onSubmit, isLogin }) {
 
       {!isLogin && (
         <>
-          <Text style={globalStyles.TextInput}>Confirm Password</Text>
+          <Text style={tw`text-left font-semibold mb-2`}>Confirm Password</Text>
           <TextInput
-            style={globalStyles.textContainer}
+            style={tw`w-full bg-white border border-gray-300 rounded-lg p-3 text-left`}
             autoCapitalize="none"
             onChangeText={updateInputValueHandler.bind(this, "confirmPassword")} // Corrected to onChangeText
             secureTextEntry={true}
@@ -78,21 +79,25 @@ function AuthForm({ onSubmit, isLogin }) {
           />
         </>
       )}
-      <View style={globalStyles.authcontainer}>
-        <TouchableOpacity style={globalStyles.buttons} onPress={submitHandler}>
-          <Text style={globalStyles.textButton}>
+
+      <View style={tw`justify-center`}>
+        {!isLogin && (
+          <Text style={tw`font-semibold`}>
+            This app tracks the number of scans you perform each month to
+            provide accurate usage monitoring and account-based functionality. A
+            user account is required to assign a unique ID for tracking
+            purposes.
+          </Text>
+        )}
+        <TouchableOpacity
+          style={tw`mx-4 bg-orange-500 py-3 px-6 rounded-lg mt-4`}
+          onPress={submitHandler}
+        >
+          <Text style={tw`text-white text-lg font-semibold text-center`}>
             {isLogin ? "Log In" : "Sign Up"}
           </Text>
         </TouchableOpacity>
       </View>
-
-      {!isLogin && (
-        <Text style={globalStyles.deleteButton}>
-          This app tracks the number of scans you perform each month to provide
-          accurate usage monitoring and account-based functionality. A user
-          account is required to assign a unique ID for tracking purposes.
-        </Text>
-      )}
     </View>
   );
 }

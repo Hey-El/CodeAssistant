@@ -1,6 +1,5 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { globalStyles } from "./styles";
 
 interface IconButtonProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -12,9 +11,7 @@ interface IconButtonProps {
 function IconButton({ icon, size, color, onPress }: IconButtonProps) {
   return (
     <Pressable onPress={onPress}>
-      <View style={globalStyles.buttonContainer}>
-        <Ionicons name={icon} size={size} color={color} />
-      </View>
+      <Ionicons name={icon} size={size} color={color} />
     </Pressable>
   );
 }

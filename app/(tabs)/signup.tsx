@@ -1,5 +1,4 @@
 import { createUser } from "./auth";
-import { useContext } from "react";
 import AuthContent from "@/components/AuthContent";
 import signUpUser from "./newUser";
 import { useDispatch } from "react-redux";

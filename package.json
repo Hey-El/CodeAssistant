@@ -20,6 +20,7 @@
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
+    "compromise": "^14.14.4",
     "dotenv": "^16.4.7",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
@@ -47,7 +48,8 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "twrnc": "^4.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

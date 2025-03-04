@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, View, TouchableOpacity, Text } from "react-native";
 import AuthForm from "./AuthForm";
 import { useNavigation } from "@react-navigation/native";
-import { globalStyles } from "@/app/(tabs)/styles";
+import tw from "twrnc";
 
 function AuthContent({ isLogin = false, Authenticated }) {
   const navigation = useNavigation();
@@ -66,14 +66,14 @@ function AuthContent({ isLogin = false, Authenticated }) {
   }
 
   return (
-    <View style={globalStyles.authContent}>
+    <View style={tw` flex-1 justify-center px-6`}>
       <AuthForm isLogin={isLogin} onSubmit={submitHandler} />
-      <View style={globalStyles.authcontainer}>
+      <View style={tw`mt-6 items-center`}>
         <TouchableOpacity
-          style={globalStyles.registrationbuttons}
+          style={tw`bg-orange-500 py-3 px-6 rounded-lg`}
           onPress={switchAuthModeHandler}
         >
-          <Text style={globalStyles.textButton}>
+          <Text style={tw`text-white text-lg font-semibold`}>
             {isLogin ? "Create a new user" : "Log in instead"}
           </Text>
         </TouchableOpacity>

@@ -2,11 +2,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ImageBackground,
   Alert,
+  SafeAreaView,
 } from "react-native";
-import React, { useContext, useCallback, useState } from "react";
-import { globalStyles } from "./styles";
+import React, { useCallback, useState } from "react";
 import { useSubscription } from "./useSubscription";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 import Purchases from "react-native-purchases";
@@ -17,7 +16,8 @@ import { deleteUser } from "./auth";
 import { Linking } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/components/authstate";
-import { RootState } from "@/components/reduxstore";
+import { RootState } from "@/components/authstate";
+import tw from "twrnc";
 
 const handleTermsClick = () => {
   Linking.openURL(
@@ -139,7 +139,7 @@ const Settings = React.memo(() => {
 
   if (isLoading) {
     return (
-      <View style={globalStyles.bottomButtonContainer}>
+      <View style={tw`flex-1 justify-center items-center`}>
         <LoadingOverlay />
         <Text>Loading My Account...</Text>
       </View>
@@ -147,64 +147,70 @@ const Settings = React.memo(() => {
   }
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/icon.png")} // Path to your icon.png
-      style={globalStyles.imageBackground} // Ensure your globalStyles.container includes flex: 1 for proper layout
-      resizeMode="contain" // Adjust how the image fits (e.g., 'cover', 'contain', etc.)
-    >
-      <View style={globalStyles.upperContainer}>
-        <View style={globalStyles.image}>
-          <Text style={globalStyles.textButton}>{subscriptionMessage}</Text>
-        </View>
+    <SafeAreaView style={tw`flex-1 mx-4`}>
+      <View style={tw`bg-blue-500 px-6 py-4 rounded-lg`}>
+        <Text style={tw`text-white text-xl font-bold text-center`}>
+          {subscriptionMessage}
+        </Text>
       </View>
-
-      <View style={globalStyles.bottomButtonContainer}>
+      <View style={tw`mt-6`}>
         {!isProMember && (
           <TouchableOpacity
-            style={globalStyles.buttons}
+            style={tw`bg-orange-500 py-3 px-6 rounded-lg mb-4`}
             disabled={isLoading}
             onPress={handleUpgrade}
           >
             {isLoading ? (
               <LoadingOverlay /> // Show spinner while loading
             ) : (
-              <Text style={globalStyles.textButton}>Upgrade now</Text>
+              <Text style={tw`text-white text-lg font-bold text-center`}>
+                Upgrade now
+              </Text>
             )}
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={globalStyles.buttons} onPress={LogOutUser}>
-          <Text style={globalStyles.textButton}>Log Out</Text>
+        <TouchableOpacity
+          style={tw`bg-red-700 py-3 px-6 rounded-lg mb-4`}
+          onPress={LogOutUser}
+        >
+          <Text style={tw`text-white text-lg font-bold text-center`}>
+            Log Out
+          </Text>
         </TouchableOpacity>
-        <Text style={globalStyles.deleteButton}>
+        <Text style={tw`text-red text-lg font-bold text-center`}>
           If you want to permanently delete your account, please select the
           button below.
         </Text>
         <TouchableOpacity
-          style={globalStyles.buttons}
+          style={tw`bg-red-500 py-3 px-6 rounded-lg mb-4`}
           onPress={DeleteUserHandler}
         >
-          <Text style={globalStyles.textButton}>Delete Account</Text>
+          <Text style={tw`text-white text-lg font-bold text-center`}>
+            Delete Account
+          </Text>
         </TouchableOpacity>
 
         {/* Footer links */}
-        <View style={globalStyles.footerContainer}>
-          <TouchableOpacity
-            style={globalStyles.footerLink}
-            onPress={handleTermsClick}
-          >
-            <Text style={globalStyles.footertextButton}>Terms of Use</Text>
+        <View style={tw`flex-row justify-between`}>
+          <TouchableOpacity style={tw`px-4 py-2`} onPress={handleTermsClick}>
+            <Text
+              style={tw`text-blue-500 font-medium font-semibold text-center`}
+            >
+              Terms of Use
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={globalStyles.footerLink}
-            onPress={handleSubmitClick}
-          >
-            <Text style={globalStyles.footertextButton}>Contact Support</Text>
+          <TouchableOpacity style={tw`px-4 py-2`} onPress={handleSubmitClick}>
+            <Text
+              style={tw`text-blue-500 font-medium font-semibold text-center`}
+            >
+              Contact Support
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    </SafeAreaView>
   );
 });
 

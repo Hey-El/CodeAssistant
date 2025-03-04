@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from "react";
 import AuthContent from "@/components/AuthContent";
-import { AuthContext } from "@/components/auth-context";
 import { authenticateLogIn } from "./auth";
 import { Alert } from "react-native";
 import checkSubscription from "./checkSubscription";
