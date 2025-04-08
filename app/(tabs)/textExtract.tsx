@@ -1,19 +1,17 @@
 export default async function sendExplanation(explanation) {
-  const SERVER_URL = "https://codeassistant-cc828ac15c2e.herokuapp.com/";
+  const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
 
   try {
-    const response = await fetch(SERVER_URL + "python", {
+    const response = await fetch(SERVER_URL + "challengeextraction", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ explanation }),
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
+    const data = await response.json();
+    console.log(data);
+    return data;
   } catch (error) {
-    console.error("Error fetching keywords from Python:", error);
+    console.error("Error fetching keywords:", error);
     throw error;
   }
 }

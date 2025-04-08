@@ -14,9 +14,11 @@ import { useSelector } from "react-redux";
 import { Provider } from "react-redux";
 import { LoadingOverlay } from "./(tabs)/loading";
 import CodeChallenge from "./(tabs)/challengeScreen";
+import Results from "./(tabs)/Results";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const ModalStack = createNativeStackNavigator();
 
 function MyTabs() {
   const TabScreens = useMemo(
@@ -24,7 +26,7 @@ function MyTabs() {
       <>
         <Tab.Screen
           name="Home"
-          component={Index}
+          component={HomeStack}
           options={{
             tabBarIcon: ({ color, size }) => (
               <IconButton icon="home" size={size} color={color} />
@@ -60,28 +62,54 @@ function MyTabs() {
 function RootLayout() {
   return (
     <Stack.Navigator>
-      {/* Tab screens */}
-      {/* Payment Modal */}
-      <Stack.Screen name="SignUp" component={SignupScreen} />
+      <Stack.Screen
+        name="Create Account"
+        component={SignupScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: "#2563eb", // blue-600
+          },
+          headerTintColor: "#ffffff", // white text
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerShadowVisible: true, // adds shadow
+          headerTitleAlign: "center", // centers the title
+        }}
+      />
       <Stack.Screen
         name="Log In"
         component={LoginScreen}
         options={{
-          presentation: "modal", // Modal presentation for Payment screen
-        }}
-      />
-      {/* Code Challenges Modal */}
-      <Stack.Screen
-        name="Challenges"
-        component={CodeChallenge}
-        options={{
-          presentation: "modal", // Modal presentation for Payment screen
+          presentation: "modal",
+          headerStyle: {
+            backgroundColor: "#2563eb", // blue-600
+          },
+          headerTintColor: "#ffffff", // white text
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerShadowVisible: true, // adds shadow
+          headerTitleAlign: "center", // centers the title // Modal presentation for Payment screen
         }}
       />
     </Stack.Navigator>
   );
 }
 
+function HomeStack() {
+  return (
+    <ModalStack.Navigator>
+      <ModalStack.Screen
+        name="HomeScreen"
+        component={Index}
+        options={{ headerShown: false }}
+      />
+      <ModalStack.Screen name="Challenges" component={CodeChallenge} />
+      <ModalStack.Screen name="Results" component={Results} />
+    </ModalStack.Navigator>
+  );
+}
 function Navigation() {
   const authCtx = useSelector((state: RootState) => state.auth.isAuthenticated);
 

@@ -16,7 +16,7 @@ function AuthContent({ isLogin = false, Authenticated }) {
 
   function switchAuthModeHandler() {
     if (isLogin) {
-      navigation.navigate("SignUp");
+      navigation.navigate("Create Account");
     } else {
       navigation.navigate("Log In");
     }

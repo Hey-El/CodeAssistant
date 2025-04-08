@@ -1,5 +1,5 @@
 export default async function signUpUser(userId) {
-  const SERVER_URL = "https://codeassistant-cc828ac15c2e.herokuapp.com/";
+  const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
 
   try {
     const response = await fetch(SERVER_URL + "signup", {

@@ -4,6 +4,8 @@ import Purchases, {
   PurchasesOffering,
   CustomerInfo,
 } from "react-native-purchases";
+import { useDispatch } from "react-redux";
+import { setSubscriptionType } from "@/components/authstate";
 
 const API_KEY = "appl_amUULqrjAwYvtFDxuhgVjhqsJRf";
 
@@ -13,13 +15,18 @@ export function useSubscription() {
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   // Determine if the user has an active "Pro" subscription
   const [isProMember, setIsProMember] = useState(false);
+  const dispatch = useDispatch();
 
-  const updateCustomerInfo = useCallback((customerInfo: CustomerInfo) => {
-    setCustomerInfo(customerInfo);
-    const proStatus =
-      customerInfo.entitlements.active["Pro access"] !== undefined;
-    setIsProMember(proStatus);
-  }, []);
+  const updateCustomerInfo = useCallback(
+    (customerInfo: CustomerInfo) => {
+      setCustomerInfo(customerInfo);
+      const proStatus =
+        customerInfo.entitlements.active["Pro access"] !== undefined;
+      setIsProMember(proStatus);
+      dispatch(setSubscriptionType(proStatus ? "Pro" : "Free"));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const fetchData = async () => {

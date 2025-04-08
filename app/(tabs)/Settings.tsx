@@ -18,16 +18,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/components/authstate";
 import { RootState } from "@/components/authstate";
 import tw from "twrnc";
+import { Ionicons } from "@expo/vector-icons";
 
 const handleTermsClick = () => {
   Linking.openURL(
-    "https://codeassistant-cc828ac15c2e.herokuapp.com/terms-of-service"
+    "https://codeassistant-app-q5sfn.ondigitalocean.app/terms-of-service"
   ).catch((err) => console.error("Failed to open URL:", err));
 };
 
 const handleSubmitClick = () => {
   Linking.openURL(
-    "https://codeassistant-cc828ac15c2e.herokuapp.com/customer-support"
+    "https://codeassistant-app-q5sfn.ondigitalocean.app/customer-support"
   ).catch((err) => console.error("Failed to open URL:", err));
 };
 
@@ -107,17 +108,9 @@ const Settings = React.memo(() => {
             );
             return;
           }
-          const upgradeResponse = await upgradeSubscription({
+          await upgradeSubscription({
             userId: userId,
           });
-          // Fetch updated customer info and call the updater
-          const updatedCustomerInfo = await Purchases.getCustomerInfo();
-          console.log(
-            "Entitlements Active:",
-            updatedCustomerInfo.entitlements.active
-          );
-          // Update state and isProMember
-          updateCustomerInfo(updatedCustomerInfo);
           break;
         case PAYWALL_RESULT.ERROR:
           alert("An error occurred while presenting the paywall.");
@@ -131,69 +124,128 @@ const Settings = React.memo(() => {
     }
   }, [userId, handleMonthlyPurchase]);
 
-  const subscriptionMessage = isProMember
-    ? "You are a PRO member!"
-    : currentOffering
-    ? "Upgrade to access PRO features!"
-    : "Upgrade unavailable at the moment";
-
   if (isLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <LoadingOverlay />
-        <Text>Loading My Account...</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={tw`flex-1 mx-4`}>
-      <View style={tw`bg-blue-500 px-6 py-4 rounded-lg`}>
-        <Text style={tw`text-white text-xl font-bold text-center`}>
-          {subscriptionMessage}
-        </Text>
+    <SafeAreaView style={tw`flex-1 bg-white p-4`}>
+      <View
+        style={tw`bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-6`}
+      >
+        <View style={tw`bg-blue-500 py-2`}>
+          <Text style={tw`text-white text-xl font-bold text-center`}>
+            Account Management
+          </Text>
+        </View>
+      </View>
+      <View style={tw`items-center bg-blue-50 rounded-full p-8 mb-8 shadow-md`}>
+        {isProMember ? (
+          <>
+            <Ionicons name="checkmark-circle" size={50} color="#3b82f6" />
+            <Text
+              style={tw`text-lg font-semibold text-gray-800 mt-2 text-center`}
+            >
+              You are a PRO member!
+            </Text>
+            <Text style={tw`text-gray-600 mt-1 text-center`}>
+              Enjoy all premium features
+            </Text>
+          </>
+        ) : (
+          <>
+            <Ionicons name="star-outline" size={50} color="#f97316" />
+            <Text
+              style={tw`text-lg font-semibold text-gray-800 mt-2 text-center`}
+            >
+              Upgrade to access PRO features!
+            </Text>
+          </>
+        )}
       </View>
       <View style={tw`mt-6`}>
         {!isProMember && (
-          <TouchableOpacity
-            style={tw`bg-orange-500 py-3 px-6 rounded-lg mb-4`}
-            disabled={isLoading}
-            onPress={handleUpgrade}
-          >
-            {isLoading ? (
-              <LoadingOverlay /> // Show spinner while loading
-            ) : (
-              <Text style={tw`text-white text-lg font-bold text-center`}>
-                Upgrade now
-              </Text>
-            )}
-          </TouchableOpacity>
+          <View style={tw`flex-row items-center justify-center`}>
+            <TouchableOpacity
+              style={tw`bg-orange-500 py-3 px-6 rounded-lg mb-4`}
+              disabled={isLoading}
+              onPress={handleUpgrade}
+            >
+              {isLoading ? (
+                <LoadingOverlay />
+              ) : (
+                <View style={tw`flex-row items-center justify-center`}>
+                  <Ionicons
+                    name="flash"
+                    size={24}
+                    color="white"
+                    style={tw`mr-2`}
+                  />
+                  <Text style={tw`text-white text-lg font-bold text-center`}>
+                    Upgrade now
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
         )}
-
+      </View>
+      <View style={tw`flex-row items-center justify-center`}>
         <TouchableOpacity
-          style={tw`bg-red-700 py-3 px-6 rounded-lg mb-4`}
+          style={tw`bg-blue-500 py-3 px-6 rounded-lg mb-4`}
           onPress={LogOutUser}
         >
-          <Text style={tw`text-white text-lg font-bold text-center`}>
-            Log Out
-          </Text>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Ionicons
+              name="log-out-outline"
+              size={24}
+              color="white"
+              style={tw`mr-2`}
+            />
+            <Text style={tw`text-white text-lg font-bold text-center`}>
+              Log Out
+            </Text>
+          </View>
         </TouchableOpacity>
-        <Text style={tw`text-red text-lg font-bold text-center`}>
+      </View>
+
+      <View style={tw`p-4`}>
+        <Text style={tw`text-lg font-bold text-center mb-4`}>
           If you want to permanently delete your account, please select the
           button below.
         </Text>
         <TouchableOpacity
-          style={tw`bg-red-500 py-3 px-6 rounded-lg mb-4`}
+          style={tw`bg-orange-500 py-3 px-6 rounded-lg mb-4`}
           onPress={DeleteUserHandler}
         >
-          <Text style={tw`text-white text-lg font-bold text-center`}>
-            Delete Account
-          </Text>
+          <View style={tw`flex-row items-center justify-center`}>
+            <Ionicons
+              name="trash-outline"
+              size={22}
+              color="white"
+              style={tw`mr-2`}
+            />
+            <Text style={tw`text-white text-lg font-bold text-center`}>
+              Delete Account
+            </Text>
+          </View>
         </TouchableOpacity>
 
-        {/* Footer links */}
         <View style={tw`flex-row justify-between`}>
-          <TouchableOpacity style={tw`px-4 py-2`} onPress={handleTermsClick}>
+          <TouchableOpacity
+            style={tw`px-4 py-2 flex-row items-center justify-center`}
+            onPress={handleTermsClick}
+          >
+            <Ionicons
+              name="document-text-outline"
+              size={18}
+              color="#3b82f6"
+              style={tw`mr-1`}
+            />
             <Text
               style={tw`text-blue-500 font-medium font-semibold text-center`}
             >
@@ -201,7 +253,16 @@ const Settings = React.memo(() => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={tw`px-4 py-2`} onPress={handleSubmitClick}>
+          <TouchableOpacity
+            style={tw`px-4 py-2 flex-row items-center justify-center`}
+            onPress={handleSubmitClick}
+          >
+            <Ionicons
+              name="mail-outline"
+              size={18}
+              color="#3b82f6"
+              style={tw`mr-1`}
+            />
             <Text
               style={tw`text-blue-500 font-medium font-semibold text-center`}
             >

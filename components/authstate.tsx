@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthState {
@@ -14,20 +13,22 @@ interface AuthState {
 interface CodeState {
   snippet: string | null;
   keywords: string[];
-  codingChallenge: Array<{ title: string; description: string }>;
+  codingChallenge: string | null;
+  challengeLanguage: string | null;
 }
 
 const initialState: AuthState = {
   authToken: null,
   userId: null,
   isAuthenticated: false,
-  subscriptionType: "free",
+  subscriptionType: "Free",
 };
 
 const codeState: CodeState = {
   snippet: null,
   keywords: [],
-  codingChallenge: [],
+  codingChallenge: null,
+  challengeLanguage: null,
 };
 
 const authSlice = createSlice({
@@ -66,11 +67,11 @@ const codeSnippetSlice = createSlice({
       state.keywords = action.payload;
     },
     // Set related coding challenges
-    setCodingChallenges: (
-      state,
-      action: PayloadAction<Array<{ title: string; description: string }>>
-    ) => {
+    setCodingChallenges: (state, action: PayloadAction<string>) => {
       state.codingChallenge = action.payload;
+    },
+    setLanguage: (state, action: PayloadAction<string>) => {
+      state.challengeLanguage = action.payload; // Update language
     },
   },
 });
@@ -87,8 +88,14 @@ const rootReducer = combineReducers({
   codeSnippet: codeSnippetSlice.reducer,
 });
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -97,7 +104,7 @@ export type AppDispatch = typeof store.dispatch;
 export const persistor = persistStore(store);
 
 export const { login, logout, setSubscriptionType } = authSlice.actions;
-export const { setSnippet, setKeywords, setCodingChallenges } =
+export const { setSnippet, setKeywords, setCodingChallenges, setLanguage } =
   codeSnippetSlice.actions;
 
 export default store;
