@@ -20,6 +20,7 @@
     "android": {
       "package": "com.EW.codeassistant",
       "versionCode": 2,
+      "minSdkVersion": 24,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
