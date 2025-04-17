@@ -1,6 +1,6 @@
-export default async function sendExplanation(explanation) {
-  const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
+import { SERVER_URL } from "./server";
 
+export default async function sendExplanation(explanation) {
   try {
     const response = await fetch(SERVER_URL + "challengeextraction", {
       method: "POST",

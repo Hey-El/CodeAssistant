@@ -1,6 +1,6 @@
-export default async function checkSubscription(userId, proStatus) {
-  const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
+import { SERVER_URL } from "./server";
 
+export default async function checkSubscription(userId, proStatus) {
   try {
     const response = await fetch(SERVER_URL + "login", {
       method: "POST",

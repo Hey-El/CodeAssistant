@@ -26,6 +26,7 @@ import tw from "twrnc";
 import sendExplanation from "./textExtract";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { SERVER_URL } from "./server";
 
 const Index = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false);
@@ -75,13 +76,13 @@ const Index = React.memo(() => {
     if (!hasPermission) {
       return;
     }
-
+    //if permission is granted, launch camera
     const image = await launchCameraAsync({
       allowsEditing: true,
       quality: 0.5,
       aspect: [16, 9],
     });
-
+    //if image is taken, set the image uri
     setImageTaken(image.assets[0].uri);
     // Get the image URI
     const imageUri = image.assets[0].uri;
@@ -97,24 +98,25 @@ const Index = React.memo(() => {
     });
 
     formData.append("userId", userId);
+    console.log("Form data:", formData);
     setIsLoading(true);
 
     try {
-      console.log("Starting upload request...");
-      const response = await fetch(
-        "https://codeassistant-app-q5sfn.ondigitalocean.app/",
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      //create a controller to abort the request if it takes too long
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      //send the form data to the server
+      const response = await fetch(SERVER_URL + "upload", {
+        method: "POST",
+        body: formData,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      //if the response is not ok, throw an error
       if (!response.ok) {
         throw new Error("Image upload failed");
       }
-
+      //if the response is ok, parse the response as json
       const responseData = await response.json();
       console.log("Response data:", responseData);
       if (responseData.explanation) {
@@ -123,7 +125,7 @@ const Index = React.memo(() => {
         setExplanation("You have reached the scan upload limit for the month");
       }
     } catch (error) {
-      if (error.message.includes("timed out")) {
+      if (error.message.includes("AbortError")) {
         setExplanation("The request took too long. Please try again.");
       } else {
         setExplanation("An unexpected error occurred. Please try again.");
@@ -149,12 +151,7 @@ const Index = React.memo(() => {
               ? returnedChallenge.codingChallenge.codingChallenge
               : returnedChallenge.codingChallenge;
 
-          console.log("Before dispatch - Challenge text:", challengeText);
           dispatch(setCodingChallenges(challengeText));
-          console.log(
-            "After dispatch - Redux state:",
-            store.getState().codeSnippet.codingChallenge
-          );
           navigation.navigate("Challenges");
         } else {
           console.error("Problem retrieving coding challenge");

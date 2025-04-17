@@ -23,6 +23,10 @@ export default function Results() {
     return <Text>No results available.</Text>;
   }
 
+  const newChallenge = () => {
+    navigation.navigate("HomeScreen");
+  };
+
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
       <View
@@ -38,6 +42,15 @@ export default function Results() {
       <ScrollView style={tw`flex-1 p-4`}>
         <StatusCard success={success} message={message} />
       </ScrollView>
+
+      <TouchableOpacity
+        style={tw`mx-4 bg-orange-500 py-3 px-6 rounded-lg mt-4`}
+        onPress={newChallenge}
+      >
+        <Text style={tw`text-white text-lg font-bold text-center`}>
+          Complete new challenge
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

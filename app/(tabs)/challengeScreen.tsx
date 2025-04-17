@@ -18,21 +18,15 @@ import { Ionicons } from "@expo/vector-icons";
 import tw from "twrnc";
 import CodeEditor from "@rivascva/react-native-code-editor";
 import { useNavigation } from "@react-navigation/native";
+import { SERVER_URL } from "./server";
 
-type SupportedLanguage =
-  | "javascript"
-  | "python"
-  | "java"
-  | "cpp"
-  | "csharp"
-  | "php";
+type SupportedLanguage = "javascript" | "python" | "java" | "csharp" | "php";
 
 // Judge0 language IDs mapping
 const JUDGE0_LANGUAGE_IDS: Record<SupportedLanguage, number> = {
   javascript: 63, // JavaScript (Node.js 12.14.0)
   python: 71, // Python (3.8.1)
   java: 62, // Java (OpenJDK 13.0.1)
-  cpp: 54, // C++ (GCC 9.2.0)
   csharp: 51, // C# (Mono 6.6.0.161)
   php: 68, // PHP (7.4.1)
 };
@@ -48,13 +42,10 @@ function CodeChallenge() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigation = useNavigation();
 
-  console.log("Redux state codingChallenge:", codingChallenge);
-
   const languages: Array<{ name: string; value: SupportedLanguage }> = [
     { name: "JavaScript", value: "javascript" },
     { name: "Python", value: "python" },
     { name: "Java", value: "java" },
-    { name: "C++", value: "cpp" },
     { name: "C#", value: "csharp" },
     { name: "PHP", value: "php" },
   ];
@@ -91,7 +82,12 @@ function CodeChallenge() {
 
     try {
       setIsSubmitting(true);
-      const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
+      console.log("Submitting code:", {
+        code,
+        languageId: JUDGE0_LANGUAGE_IDS[selectedLanguage],
+        challenge: codingChallenge,
+      });
+
       const response = await fetch(SERVER_URL + "submit-solution", {
         method: "POST",
         headers: {
@@ -109,7 +105,6 @@ function CodeChallenge() {
       }
 
       const result = await response.json();
-      console.log(result);
 
       if (result.errorDetails) {
         console.error("Backend system error:", result.errorDetails);
@@ -173,7 +168,13 @@ function CodeChallenge() {
               ))}
             </ScrollView>
           </View>
-
+          <View style={tw`p-4 bg-yellow-50 border-l-4 border-yellow-400 mb-4`}>
+            <Text style={tw`text-yellow-800 font-medium`}>
+              💡 Important: Use the example input provided in the challenge
+              description as your function input. Do not create your own input
+              values.
+            </Text>
+          </View>
           <View style={tw`flex-1 m-2`}>
             <CodeEditor
               language={selectedLanguage}

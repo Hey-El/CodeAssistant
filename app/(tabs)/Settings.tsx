@@ -19,17 +19,17 @@ import { logout } from "@/components/authstate";
 import { RootState } from "@/components/authstate";
 import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons";
-
+import { SERVER_URL } from "./server";
 const handleTermsClick = () => {
-  Linking.openURL(
-    "https://codeassistant-app-q5sfn.ondigitalocean.app/terms-of-service"
-  ).catch((err) => console.error("Failed to open URL:", err));
+  Linking.openURL(SERVER_URL + "terms-of-service").catch((err) =>
+    console.error("Failed to open URL:", err)
+  );
 };
 
 const handleSubmitClick = () => {
-  Linking.openURL(
-    "https://codeassistant-app-q5sfn.ondigitalocean.app/customer-support"
-  ).catch((err) => console.error("Failed to open URL:", err));
+  Linking.openURL(SERVER_URL + "customer-support").catch((err) =>
+    console.error("Failed to open URL:", err)
+  );
 };
 
 const Settings = React.memo(() => {

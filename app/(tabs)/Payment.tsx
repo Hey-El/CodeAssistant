@@ -1,4 +1,4 @@
-const SERVER_URL = "https://codeassistant-app-q5sfn.ondigitalocean.app/";
+import { SERVER_URL } from "./server";
 
 export default async function upgradeSubscription({ userId }) {
   try {
