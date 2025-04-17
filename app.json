@@ -38,6 +38,14 @@
         {
           "cameraPermission": "Camera access is required to take and upload images of your code."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24
+          }
+        }
       ]
     ],
     "experiments": {
