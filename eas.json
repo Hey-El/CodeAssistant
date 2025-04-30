@@ -24,6 +24,10 @@
         "appleId": "elaine.wan87@gmail.com",
         "ascAppId": "6737229175",
         "appleTeamId": "6824KW255J"
+      },
+      "android": {
+        "serviceAccountKeyPath": "./service-account-file.json",
+        "track": "internal"
       }
     }
   }

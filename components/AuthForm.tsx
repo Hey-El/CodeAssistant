@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, TouchableOpacity, Text, TextInput } from "react-native";
 import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 function AuthForm({ onSubmit, isLogin }) {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -36,7 +37,8 @@ function AuthForm({ onSubmit, isLogin }) {
   }
 
   return (
-    <View style={tw`mt-2`}>
+    <KeyboardAwareScrollView>
+     <View style={tw`mt-2`}>
       <View>
         <Text style={tw`text-gray-700 mt-8 font-semibold mb-2`}>
           Email Address
@@ -155,6 +157,7 @@ function AuthForm({ onSubmit, isLogin }) {
         </TouchableOpacity>
       </View>
     </View>
+    </KeyboardAwareScrollView>
   );
 }
 

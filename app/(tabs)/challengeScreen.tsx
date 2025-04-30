@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
   Alert,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -127,47 +127,50 @@ function CodeChallenge() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={tw`flex-1 bg-white`}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={tw`flex-1`}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={tw`flex-1`}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={tw`p-4`}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={tw`bg-gray-100 border-b border-gray-200`}>
-            <ScrollView style={tw` p-4`}>
-              <Text style={tw`text-base leading-6 text-gray-800`}>
-                {codingChallenge || "No challenge available"}
-              </Text>
-            </ScrollView>
-
-            <ScrollView
-              horizontal
-              style={tw`p-2 bg-gray-50`}
-              showsHorizontalScrollIndicator={false}
-            >
-              {languages.map((lang) => (
-                <TouchableOpacity
-                  key={lang.value}
-                  style={[
-                    tw`px-4 py-2 mx-1 rounded-full border-2`,
-                    selectedLanguage === lang.value
-                      ? tw`bg-blue-500 border-blue-500`
-                      : tw`bg-white border-gray-200`,
-                  ]}
-                  onPress={() => setSelectedLanguage(lang.value)}
-                >
-                  <Text
-                    style={[
-                      tw`font-medium`,
-                      selectedLanguage === lang.value && tw`text-white`,
-                    ]}
-                  >
-                    {lang.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <Text style={tw`text-base leading-6 text-gray-800`}>
+              {codingChallenge || "No challenge available"}
+            </Text>
           </View>
+
+          <ScrollView
+            horizontal
+            style={tw`p-2 bg-gray-50`}
+            showsHorizontalScrollIndicator={false}
+          >
+            {languages.map((lang) => (
+              <TouchableOpacity
+                key={lang.value}
+                style={[
+                  tw`w-24 px-2 py-2 mx-1 rounded-full border-2 items-center`,
+                  selectedLanguage === lang.value
+                    ? tw`bg-blue-500 border-blue-500`
+                    : tw`bg-white border-gray-200`,
+                ]}
+                onPress={() => setSelectedLanguage(lang.value)}
+              >
+                <Text
+                  style={[
+                    tw`font-medium text-center`,
+                    selectedLanguage === lang.value && tw`text-white`,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {lang.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
           <View style={tw`p-4 bg-yellow-50 border-l-4 border-yellow-400 mb-4`}>
             <Text style={tw`text-yellow-800 font-medium`}>
               💡 Important: Use the example input provided in the challenge
@@ -183,7 +186,6 @@ function CodeChallenge() {
               style={tw`flex-1 bg-gray-900 rounded-lg`}
               showLineNumbers={true}
             />
-
             {isKeyboardVisible && (
               <TouchableOpacity
                 style={tw`absolute right-4 bottom-4 bg-black/50 rounded-full w-10 h-10 justify-center items-center z-50`}
@@ -211,8 +213,8 @@ function CodeChallenge() {
               </View>
             )}
           </TouchableOpacity>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }

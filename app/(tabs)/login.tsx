@@ -19,6 +19,13 @@ function LoginScreen() {
     setIsLoading(true);
     try {
       const response = await authenticateLogIn(email, password);
+
+      if (response.error) {
+        // Handle specific error from authenticateLogIn
+        Alert.alert("Login Failed", response.error);
+        return;
+      }
+
       if (response && response.idToken && response.localId) {
         const authToken = response.idToken; // No need to stringify, it's already a string
         const userId = response.localId;

@@ -15,6 +15,9 @@ import { Provider } from "react-redux";
 import { LoadingOverlay } from "./(tabs)/loading";
 import CodeChallenge from "./(tabs)/challengeScreen";
 import Results from "./(tabs)/Results";
+import { SafeAreaView } from "react-native";
+import tw from "twrnc";
+import { Platform } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,7 +22,7 @@ export default function Results() {
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-white`}>
+    <View style={tw`bg-white flex-1`}>
       <View
         style={tw`flex-row justify-between items-center p-4 border-b border-gray-200`}
       >
@@ -51,6 +45,6 @@ export default function Results() {
           Complete new challenge
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 }
