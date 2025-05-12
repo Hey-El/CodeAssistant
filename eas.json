@@ -8,14 +8,19 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m1-medium"
+        "resourceClass": "m1-medium",
+        "image": "macos-sequoia-15.3-xcode-16.2"
       }
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "ios": {
+      "resourceClass": "m1-medium",
+      "image": "macos-sequoia-15.3-xcode-16.2"
+    }
     }
   },
   "submit": {

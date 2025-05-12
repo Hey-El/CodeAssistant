@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { SERVER_URL } from "./server";
 import ScreenLayout from "./safeArea";
+import * as FileSystem from "expo-file-system";
 
 const Index = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +42,24 @@ const Index = React.memo(() => {
     }
     if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
       Alert.alert(
-        "Camera access is required to take and upload images of your code."
+        "Camera Permission Required",
+        "Camera access is needed to take and upload images of your code.",
+        [
+          {
+            text: "Retry Permission",
+            onPress: async () => {
+              const permissionResponse = await requestPermission();
+              if (permissionResponse.granted) {
+                setHasCameraPermission(true);
+              } else {
+                Alert.alert(
+                  "Permission Still Denied",
+                  "Please enable camera access manually in your device settings."
+                );
+              }
+            },
+          },
+        ]
       );
       return false;
     }
@@ -76,11 +94,24 @@ const Index = React.memo(() => {
     // Get the image URI
     const imageUri = image.assets[0].uri;
     console.log("Image URI:", imageUri);
+    // Create a temporary file path in the app's cache directory
+    const tempFilePath = `${FileSystem.cacheDirectory}temp_${Date.now()}.jpg`;
+    // Copy the original image to the temporary location
+    await FileSystem.copyAsync({
+      from: imageUri,
+      to: tempFilePath,
+    });
+    console.log("📁 Copied to temp path:", tempFilePath);
     // Enhance the image
-    const enhanced = await imageEnhancer(imageUri);
-    const formattedUri = enhanced.replace("file://", "");
+    const formattedUri = await imageEnhancer(tempFilePath);
     const formData = new FormData();
     formData.append("image", {
+      uri: formattedUri,
+      type: "image/jpeg",
+      name: "photo.jpg",
+    });
+
+    console.log("Final image object:", {
       uri: formattedUri,
       type: "image/jpeg",
       name: "photo.jpg",
@@ -115,6 +146,7 @@ const Index = React.memo(() => {
         setExplanation("You have reached the scan upload limit for the month");
       }
     } catch (error) {
+      setImageTaken(false);
       if (error.message.includes("AbortError")) {
         setExplanation("The request took too long. Please try again.");
       } else {
