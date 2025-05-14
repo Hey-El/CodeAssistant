@@ -28,6 +28,12 @@ const handleSubmitClick = () => {
   );
 };
 
+const handleSubmitPrivacy = () => {
+  Linking.openURL(SERVER_URL + "privacy-policy").catch((err) =>
+    console.error("Failed to open URL:", err)
+  );
+};
+
 const Settings = React.memo(() => {
   const dispatch = useDispatch();
   const authToken = useSelector((state: RootState) => state.auth.authToken);
@@ -266,6 +272,23 @@ const Settings = React.memo(() => {
                 style={tw`text-blue-500 font-medium font-semibold text-center`}
               >
                 Contact Support
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={tw`px-4 py-2 flex-row items-center justify-center`}
+              onPress={handleSubmitPrivacy}
+            >
+              <Ionicons
+                name="mail-outline"
+                size={18}
+                color="#3b82f6"
+                style={tw`mr-1`}
+              />
+              <Text
+                style={tw`text-blue-500 font-medium font-semibold text-center`}
+              >
+                Privacy Policy
               </Text>
             </TouchableOpacity>
           </View>
